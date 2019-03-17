@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style>
+		span {
+			color: green;
+		}
+	</style>
+</head>
+<body>
+	<h1>Bitcoin Current Price is: <span id="price"></span> </h1>
+	<div>
+	  <input type="radio" id="USD" name="currency" value="USD"
+	         checked>
+	  <label for="USD">USD</label>
+	</div>
+
+	<div>
+	  <input type="radio" id="GBP" name="currency" value="GBP">
+	  <label for="GBP">GBP</label>
+	</div>
+
+	<div>
+	  <input type="radio" id="EUR" name="currency" value="EUR">
+	  <label for="EUR">EUR</label>
+	</div>
+
+	<button id="priceCheck">Refresh Data</button>
+	<script src="bitcoin.js"></script>
+</body>
+</html>
