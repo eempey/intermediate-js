@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Ron Swanson Quote Generator</title>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script
+			  src="http://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+</head>
+<body>
+	<div class="hero">
+		<div class="hero-body has-text-centered">
+				<h1 class='title'>Ron Swanson Quote Generator</h1>
+	<h2 class='subtitle'>(4 Ways of writing AJAX requests)</h2>
+		</div>
+	</div>
+
+	<div class="section">
+		<div class="container has-text-centered">
+			<button class="button is-primary" id="http">XHR</button>
+			<button class="button is-success" id="fetch">Fetch</button>
+			<button class="button is-dark" id="jquery">jQuery</button>
+			<button class="button is-danger" id="axios">Axios</button>		
+		</div>
+	</div>
+
+	<div class="section">
+		<div class="container has-text-centered">
+
+			<h2 id="quote" class="subtitle"></h2>			
+		</div>
+	</div>
+
+
+
+	
+	<script src="axios-json.js"></script>
+</body>
+</html>
