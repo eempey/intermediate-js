@@ -35,7 +35,7 @@ xhrBtn.addEventListener("click", function(){
 
 	XHR.open("GET", url);
 	XHR.send();
-});
+});uy7yu
 
 /*jQuery Section*/
 jqueryBtn.click(function(){
