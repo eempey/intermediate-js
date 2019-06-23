@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSX Exercise</title>
+    <script src="https://unpkg.com/react@16.0.0-rc.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.0.0-rc.2/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        #randomBox {
+            line-height: 150px;
+            width: 600px;
+            background-color: #eee;
+            margin: 30px auto 0 auto;
+        }
+        p{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="text/babel">
+    class RandomBox extends React.Component {
+        fonts = [
+            'Georgia, serif',
+            '"Palatino Linotype", "Book Antiqua", Palatino, serif',
+            '"Times New Roman", Times, serif',
+            '"Courier New", Courier, monospace',
+            '"Lucida Console", Monaco, monospace'
+        ];
+
+        render() {
+            let color = axios.get('http://www.colr.org/json/color/random').then(response=>{
+                let color = '#'+response.data.colors[0].hex;
+                document.getElementById('randomBox').style.backgroundColor = color;
+            });
+
+            return (
+                <div style={{backgroundColor: color}} id="randomBox">
+                    <p style={{fontFamily: this.fonts[Math.floor(Math.random()*this.fonts.length)],
+                    fontSize:Math.floor(Math.random()*75)+'px'}}>Random Box</p>
+                </div>
+            );
+      }
+    }
+
+    ReactDOM.render(<RandomBox />, document.getElementById('app'));
+    document.getElementById('randomBox').addEventListener('click', function () {
+        ReactDOM.render(<RandomBox />, document.getElementById('app'));
+    })
+  </script>
+</body>
+</html>
