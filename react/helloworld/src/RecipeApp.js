@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import Recipe from './Recipe';
 import './RecipeApp.css';
 
 class RecipeApp extends Component {
   render() {
     return (
-      <div className="RecipeApp">
-        <div className="RecipeApp-header">
-          <img src={logo} className="RecipeApp-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+      <div className="App">
+        <div className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h2>Recipes</h2>
         </div>
-        <p className="RecipeApp-intro">
-          To get started, edit <code>src/RecipeApp.js</code> and save to reload.
-        </p>
+          <Recipe
+            title="Pasta"
+            ingredients={['flour', 'water']}
+            instructions="Mix ingredients"
+            img="spaghetti.jpg"
+          />
       </div>
     );
   }
