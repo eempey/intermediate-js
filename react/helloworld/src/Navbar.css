@@ -1,0 +1,36 @@
+#nav-bar{
+    background-color: #2c3e50;
+    padding: 10px;
+    overflow: hidden;
+}
+
+#nav-bar h2{
+    text-align: left;
+    color: #ecf0f1;
+    font-size:1.1em;
+}
+
+#nav-bar .title {
+    float: left;
+}
+
+#nav-bar .nav-links{
+    color: #cccccc;
+    float: right;
+}
+
+#nav-bar .nav-links li{
+    display: inline;
+    margin-right: 5px;
+    margin-left:5px;
+    
+
+}
+#nav-bar .nav-links li a {
+    text-underline: none;
+    text-decoration: none;
+    color: #ccc;
+}
+#nav-bar .nav-links li a:hover{
+    color: #ffffff;
+}
