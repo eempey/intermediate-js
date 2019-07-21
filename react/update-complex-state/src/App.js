@@ -31,14 +31,22 @@ class App extends Component {
     ));
 
     setTimeout(()=>{
-      let randomIndex = Math.floor(Math.random()*this.state.instructors.length);
-      let nextVictim = this.state.instructors[randomIndex];
-      let nextVictimsHobbies = nextVictim.hobbies.slice(0,-1);
-      console.log(nextVictimsHobbies);
-      let newInstructors = Object.assign({},this.state.instructors);
-      newInstructors[randomIndex].hobbies = nextVictimsHobbies;
-      this.setState(newInstructors);
+      const randomIndex = Math.floor(Math.random()*this.state.instructors.length);
+      const hobbyIndex = Math.floor(Math.random()*this.state.instructors[randomIndex].hobbies.length);
+      const instructors = this.state.instructors.map((instructor, index) => {
+          if (index === randomIndex) {
+              const hobbies = [...instructor.hobbies];
+              hobbies.splice(hobbyIndex, 1);
+              return {
+                  ...instructor,
+                  hobbies
+              }
+          }
+            return instructor;
+      });
 
+      this.setState({instructors});
+        console.log(instructors);
     }, 5000);
 
     return (
