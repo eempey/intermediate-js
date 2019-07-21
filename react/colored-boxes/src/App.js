@@ -7,41 +7,30 @@ class App extends Component {
     super(props);
     let boxes = [];
     for (let i=0; i < 32; i++) {
-      boxes.push(App.defaultProps.allColors[Math.floor(Math.random() * App.defaultProps.allColors.length)]);
+      boxes.push(this.props.allColors[Math.floor(Math.random() * this.props.allColors.length)]);
     }
+
+    setInterval(()=>{
+      let randomIndex = Math.floor(Math.random()*this.state.boxes.length);
+      let randomColor = this.props.allColors[Math.floor(Math.random() * this.props.allColors.length)];
+      let boxes = this.state.boxes.slice();
+      boxes[randomIndex] = randomColor;
+
+      this.setState({boxes});
+    }, 300);
 
     this.state = {
       boxes: boxes
     };
   }
 
-
-
   render() {
     const boxes = this.state.boxes.map((box, index) => (
-      <div key={index} style={{ backgroundColor: box }}>
+      <div key={index} style={{ backgroundColor: box, height: '180px', width:'180px', float: 'left' }}>
         {box}
       </div>
     ));
-
-    setInterval(()=>{
-      let randomIndex = Math.floor(Math.random()*this.state.boxes.length);
-      let randomColor = App.defaultProps.allColors[Math.floor(Math.random() * App.defaultProps.allColors.length)];
-      //let nextVictim = this.state.boxes[randomIndex];
-      //let nextVictimsHobbies = nextVictim.hobbies.slice(0,-1);
-      console.log(randomColor);
-      console.log(randomIndex);
-      let newBoxes = Object.assign({},this.state.boxes);
-      newBoxes[randomIndex] = randomColor;
-      console.log(newBoxes);
-
-      console.log(this.state);
-      this.setState({newBoxes});
-      console.log(this.state);
-      //alert('stop');
-    }, 300);
-
-
+    
     return (
         <div className="App">
           {boxes}
