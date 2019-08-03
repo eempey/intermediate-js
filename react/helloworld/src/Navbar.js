@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import './Navbar.css';
 
 class Navbar extends Component {
+    static defaultProps = {
+        onNewRecipe() {}
+    };
+
+    static propTypes = {
+        onNewRecipe: PropTypes.func
+    };
     render() {
+        const {onNewRecipe} = this.props;
         const links = [
-            {
-                'title': 'New Recipe',
-                'url': '/addnew'
-            },
             {
                 'title': 'Home',
                 'url': '/home'
@@ -33,6 +38,9 @@ class Navbar extends Component {
                 </div>
                 <div className="nav-links">
                     <ul>
+                        <li>
+                            <a onClick={onNewRecipe}>New Recipe</a>
+                        </li>
                         {linkList}
                     </ul>
                 </div>
