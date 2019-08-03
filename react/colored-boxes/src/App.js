@@ -30,7 +30,7 @@ class App extends Component {
         {box}
       </div>
     ));
-    
+
     return (
         <div className="App">
           {boxes}
