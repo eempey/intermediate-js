@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Listeners in D3</title>
+    <style>
+        body {
+            background-color: #e4e4e4;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #notes {
+            margin: 0 auto;
+            width: 75%;
+        }
+
+        #preview-note {
+            margin: 0 auto;
+            width: 75%;
+        }
+
+        .note {
+            background-color: #fdffb7;
+            border: 8px solid #d4daa7;
+            border-radius: 8px;
+            padding: 10px;
+            transition: 1s;
+        }
+        .preview {
+            background-color: #96ff93;
+            border: 8px solid #25521e;
+            border-radius: 8px;
+            padding: 10px;
+            display: none;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        input {
+            width: 50%;
+        }
+
+        input,
+        button {
+            padding: 10px;
+        }
+
+        button {
+            background-color: #ff9494;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            cursor: pointer;
+            background-color: #fe2222;
+        }
+
+        button:focus {
+            outline: none;
+        }
+        .lucky-class {
+            background-color: #ff50ef;
+            transition: 1s;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>My notes.</h1>
+<div id="notes">
+    <p class="note">
+        Need to go to the store.
+    </p>
+    <p class="note">
+        What's the name of that movie with that guy?
+    </p>
+    <p class="note">
+        Here's another note.
+    </p>
+</div>
+<div id="preview-note">
+    <p class="preview"></p>
+</div>
+
+<form id="new-note">
+    <input type="text">
+    <button>Add Note</button>
+    <button type="button" id='removeNotes'>Remove All Notes</button>
+    <button type="button" id='lucky'>I'm feeling lucky</button>
+</form>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script>
+    const input = d3.select('input');
+    d3.select('#new-note').on('submit', function(){
+        d3.event.preventDefault();
+
+        d3.select('#notes')
+            .append('p')
+                .classed('note', true)
+                .text(input.property('value'));
+
+        input.property('value', '');
+        d3.select('.preview').style('display', 'none');
+    });
+    d3.select('#removeNotes')
+        .on('click', function() {
+            d3.selectAll('.note')
+                .remove();
+        });
+    let lucky = false;
+    d3.select('#lucky')
+        .on('click', () => {
+            lucky = !lucky;
+            d3.selectAll('.note')
+                .classed('lucky-class', lucky);
+        });
+
+    d3.select('input')
+        .on('input', () => {
+            if(input.property('value').length){
+                d3.select('.preview')
+                    .style('display', 'block')
+                    .text(input.property('value'));
+            } else {
+                d3.select('.preview')
+                    .style('display', 'none')
+                    .text(input.property('value'));
+            }
+
+        })
+</script>
+</body>
+</html>
