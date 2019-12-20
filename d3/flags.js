@@ -38,15 +38,26 @@ function CalculateStarPoints(centerX, centerY, arms, outerRadius, innerRadius)
 }
 
 const stars = [];
-for (let i = 1; i <= 12; i++) {
+let xOffset = 0;
+for (let i = 0; i <= 50; i++) {
     let star = {};
-    star.centerX = i * width * 0.0315;
+
+    let yOffset = 0;
+    star.centerX = xOffset * width * 0.0315;
+
+    if (star.centerX > unionWidth) {
+        yOffset = width * 0.054;
+        xOffset = 0;
+    }
     if (i % 2 === 0) {
-        star.centerY = width * 0.054 / 2;
+        star.centerY = width * 0.054 + yOffset;
     } else {
-        star.centerY = width * 0.054;
+        star.centerY = width * 0.054 / 2 + yOffset;
     }
     stars.push(star);
+    console.log(i);
+    console.log(xOffset);
+    xOffset++;
 }
 console.log(stars);
 
