@@ -2,6 +2,7 @@
 // https://www.inchcalculator.com/american-flag-size-proportions-calculator/
 const width = 1160;
 const height = 611;
+const unionWidth = width/5 * 2;
 const starOuterRadius = height * 0.063 / 2;
 const starInnerRadius = starOuterRadius * 0.382;
 
@@ -18,8 +19,8 @@ function CalculateStarPoints(centerX, centerY, arms, outerRadius, innerRadius)
         // Use outer or inner radius depending on what iteration we are in.
         var r = (i & 1) == 0 ? outerRadius : innerRadius;
 
-        var currX = centerX + Math.cos(i * angle) * r;
-        var currY = centerY + Math.sin(i * angle) * r;
+        var currX = centerX + Math.cos(i * angle + 60) * r;
+        var currY = centerY + Math.sin(i * angle + 60) * r;
 
         // Our first time we simply append the coordinates, subsequet times
         // we append a ", " to distinguish each coordinate pair.
@@ -35,6 +36,19 @@ function CalculateStarPoints(centerX, centerY, arms, outerRadius, innerRadius)
 
     return results;
 }
+
+const stars = [];
+for (let i = 1; i <= 12; i++) {
+    let star = {};
+    star.centerX = i * width * 0.0315;
+    if (i % 2 === 0) {
+        star.centerY = width * 0.054 / 2;
+    } else {
+        star.centerY = width * 0.054;
+    }
+    stars.push(star);
+}
+console.log(stars);
 
 const flag = d3.select('#american-flag')
     .select('svg')
@@ -54,13 +68,19 @@ for(let i=0; i < 13; i++) {
 
 // add the union. 2/5 the width and 7 stripes high
 flag.append('rect')
-    .attr('width', width/5 * 2 + 'px')
+    .attr('width', unionWidth + 'px')
     .attr('height', height/13 * 7 + 'px')
     .attr('fill', '#3C3B6E');
 
-flag.append("svg:polygon")
-    .attr('id', 'star_1')
-    .attr('points', CalculateStarPoints(20, 20, 5, starOuterRadius, starInnerRadius))
-    .attr('fill', 'white')
-    .attr('transform', 'rotate(15 0 0)');
+flag.selectAll("polygon")
+    .data(stars)
+    .enter()
+    .append('polygon')
+    .attr('points', d => {
+        return CalculateStarPoints(d.centerX, d.centerY, 5, starOuterRadius, starInnerRadius)
+    })
+    .attr('fill', 'white');
+
+
+
 
