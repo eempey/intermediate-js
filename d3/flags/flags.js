@@ -1,9 +1,9 @@
 // Math proportions of american flag found here:
 // https://www.inchcalculator.com/american-flag-size-proportions-calculator/
-const width = 1160;
-const height = 611;
-const unionWidth = width/5 * 2;
-const starOuterRadius = height * 0.063 / 2;
+const height = 305;
+const width = height * 1.9;
+const unionWidth = height * 0.76;
+const starOuterRadius = height * 0.0616 / 2;
 const starInnerRadius = starOuterRadius * 0.382;
 
 // borrowed this method from
@@ -37,29 +37,48 @@ function CalculateStarPoints(centerX, centerY, arms, outerRadius, innerRadius)
     return results;
 }
 
-const stars = [];
-let xOffset = 0;
-for (let i = 0; i <= 50; i++) {
-    let star = {};
-
+function generateStarData(){
+    const stars = [];
+    let xOffset = 0;
     let yOffset = 0;
-    star.centerX = xOffset * width * 0.0315;
+    let newStarRow = 0;
+    const starWidth = height * 0.063;
+    for (let i = 0; i <= 50; i++) {
+        let star = {};
+        star.color = 'white';
 
-    if (star.centerX > unionWidth) {
-        yOffset = width * 0.054;
-        xOffset = 0;
+        star.centerY = 0;
+
+        star.centerX = xOffset * starWidth * 2 + starWidth;
+        yOffset = height * 0.054 * newStarRow;
+        star.centerY = height * 0.054  + yOffset;
+
+        if (newStarRow % 2 !== 0 ) {
+            star.centerX += starWidth;
+        }
+        if (star.centerX > (unionWidth - starWidth)) {
+            newStarRow+=1;
+            xOffset = 0;
+            star.centerX = xOffset * starWidth * 2 + starWidth;
+            if (newStarRow % 2 === 0 ) {
+                star.centerX += starWidth;
+            }
+        }
+        star.xOffset = xOffset;
+        star.i = i;
+        star.newStarRow = newStarRow;
+        star.starContainerWidth = starWidth;
+        star.unionWidth = unionWidth;
+        star.maxWidth = unionWidth - star.starContainerWidth;
+        stars.push(star);
+
+        xOffset++;
     }
-    if (i % 2 === 0) {
-        star.centerY = width * 0.054 + yOffset;
-    } else {
-        star.centerY = width * 0.054 / 2 + yOffset;
-    }
-    stars.push(star);
-    console.log(i);
-    console.log(xOffset);
-    xOffset++;
+
+    return stars;
 }
-console.log(stars);
+
+
 
 const flag = d3.select('#american-flag')
     .select('svg')
@@ -83,14 +102,15 @@ flag.append('rect')
     .attr('height', height/13 * 7 + 'px')
     .attr('fill', '#3C3B6E');
 
+// Add the stars
 flag.selectAll("polygon")
-    .data(stars)
+    .data(generateStarData())
     .enter()
     .append('polygon')
     .attr('points', d => {
         return CalculateStarPoints(d.centerX, d.centerY, 5, starOuterRadius, starInnerRadius)
     })
-    .attr('fill', 'white');
+    .attr('fill', d => d.color);
 
 
 
