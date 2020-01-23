@@ -60,6 +60,20 @@ bars.append('rect')
     })
     .attr('fill', '#9c27b0');
 
-//
+d3.select('svg')
+    .append('text')
+    .attr('x', width / 2)
+    .attr('y', height)
+    .style('text-anchor', 'middle')
+    .text('Adult Literacy Rates (%)');
+
+d3.select('svg')
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -height / 2)
+    .attr('y', padding -5)
+    .attr('dy', '-1.1em')
+    .style('text-anchor', 'middle')
+    .text('Frequency');
 
 
