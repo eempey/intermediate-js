@@ -17,6 +17,9 @@ const histogram = d3.histogram()
 
 const bins = histogram(adultLiteracyRateData);
 
+d3.select('.bins')
+    .html(bins.length - 1);
+
 console.log(bins);
 
 const yScale = d3.scaleLinear()
@@ -75,5 +78,58 @@ d3.select('svg')
     .attr('dy', '-1.1em')
     .style('text-anchor', 'middle')
     .text('Frequency');
+
+//EEMPEY tickvalues is the method to help with the bonus
+
+d3.select('input')
+    .on('input', () => {
+
+        d3.select('.bins')
+            .html(d3.event.target.value);
+
+
+/*        const year = +d3.event.target.value;
+        const yearData = birthData.filter(d => d.year === year);
+        xScale.domain([0, d3.max(yearData, d => d.births)]);
+        histogram.domain(xScale.domain())
+            .thresholds(xScale.ticks());
+        const bins = histogram(yearData);
+        yScale.domain([0, d3.max(bins, d => d.length)]);
+
+        bars = d3.select('svg')
+            .selectAll('.bar')
+            .data(bins);
+
+        bars
+            .exit()
+            .remove();
+
+        const g = bars
+            .enter()
+            .append('g')
+            .classed('bar', true);
+
+        g.append('rect');
+        g.append('text');
+
+        g.merge(bars)
+            .select('rect')
+            .attr('x', (d, i) => xScale(d.x0))
+            .attr('y', d => yScale(d.length))
+            .attr('height', d => height - yScale(d.length))
+            .attr('width', d => {
+                const width = xScale(d.x1) - xScale(d.x0) - barPadding;
+                return width < 0 ? 0 : width;
+            })
+            .attr('fill', '#9c27b0');
+
+        g.merge(bars)
+            .select('text')
+            .text(d => d.x0 + ' - ' + d.x1 + " (bar height: " + d.length + ")")
+            .attr('transform', 'rotate(-90)')
+            .attr('y', d => (xScale(d.x1) + xScale(d.x0)) / 2)
+            .attr('x', - height + 10)
+            .style('alignment-baseline', 'middle');*/
+    });
 
 
