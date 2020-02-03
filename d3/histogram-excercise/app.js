@@ -15,7 +15,8 @@ const histogram = d3.histogram()
     .thresholds(xScale.ticks())
     .value(d => d.adultLiteracyRate);
 
-const bins = histogram(adultLiteracyRateData);
+let bins = histogram(adultLiteracyRateData);
+console.log(xScale.ticks());
 
 d3.select('.bins')
     .html(bins.length - 1);
@@ -44,7 +45,7 @@ d3.select('svg')
     .call(yAxis);
 
 
-const bars = d3.select('svg')
+let bars = d3.select('svg')
         .attr('width', width)
         .attr('height', height)
     .selectAll('.bar')
@@ -83,9 +84,45 @@ d3.select('svg')
 
 d3.select('input')
     .on('input', () => {
-
+        const rangeValue = d3.event.target.value
         d3.select('.bins')
-            .html(d3.event.target.value);
+            .html(rangeValue);
+
+        histogram.domain(xScale.domain())
+            .thresholds(xScale.ticks(rangeValue));
+
+        bins = histogram(adultLiteracyRateData);
+        yScale.domain([0, d3.max(bins, d => d.length)]);
+
+        bars = d3.select('svg')
+            .selectAll('.bar')
+            .data(bins);
+
+        bars
+            .exit()
+            .remove();
+
+        const g = bars
+            .enter()
+            .append('g')
+            .classed('bar', true);
+
+        g.append('rect');
+
+        g.merge(bars)
+            .select('rect')
+            .attr('x', d => xScale(d.x0))
+            .attr('y', d => yScale(d.length))
+            .attr('height', d => height - yScale(d.length) - padding)
+            .attr('width', d => {
+                const width = xScale(d.x1) - xScale(d.x0) - barPadding;
+                return width > 0 ? width : 0;
+            })
+            .attr('fill', '#9c27b0');
+
+
+
+
 
 
 /*        const year = +d3.event.target.value;
