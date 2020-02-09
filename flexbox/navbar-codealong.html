@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
+        @import url('https://fonts.googleapis.com/css?family=Raleway:200');
+
+        nav {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+
+        a {
+            font-size: 40px;
+            text-decoration: none;
+            color: #95a5a6;
+            font-family: raleway;
+            border-bottom: 1px solid #52c9aa;
+            margin: 20px;
+        }
+        a:hover {
+            color: #3498db;
+            border-bottom-color: #3498db;
+            transition: color 0.5s ease-out;
+        }
+        i{
+            margin-right: 10px;
+        }
+        @media screen and (max-width: 920px) {
+            nav {
+                justify-content: space-around;
+            }
+            a {
+                font-size: 25px;
+            }
+        }
+        @media screen and (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href=""><i class="fa fa-home"></i>Home</a>
+        <a href=""><i class="fa fa-question"></i>About</a>
+        <a href=""><i class="fa fa-phone"></i>Contact</a>
+        <a href=""><i class="fa fa-paw"></i>Dogs</a>
+    </nav>
+</body>
+</html>
