@@ -33,15 +33,15 @@ const xAxis = d3.axisBottom(xScale)
 d3.select('svg')
     .append('g')
     .attr('transform', `translate(0, ${height- padding})`)
+    .classed('x-axis', true)
     .call(xAxis);
 
-const yAxis = d3.axisLeft(yScale)
-    .tickSize(5)
-    .tickSizeOuter(5);
+const yAxis = d3.axisLeft(yScale);
 
 d3.select('svg')
     .append('g')
     .attr('transform', `translate(${padding}, 0)`)
+    .classed('y-axis', true)
     .call(yAxis);
 
 
@@ -84,15 +84,16 @@ d3.select('svg')
 
 d3.select('input')
     .on('input', () => {
-        const rangeValue = d3.event.target.value
+        const rangeValue = d3.event.target.value;
         d3.select('.bins')
             .html(rangeValue);
 
-        histogram.domain(xScale.domain())
-            .thresholds(xScale.ticks(rangeValue));
+        histogram.thresholds(xScale.ticks(rangeValue));
 
         bins = histogram(adultLiteracyRateData);
         yScale.domain([0, d3.max(bins, d => d.length)]);
+
+        d3.select('.y-axis').call(d3.axisLeft(yScale));
 
         bars = d3.select('svg')
             .selectAll('.bar')
