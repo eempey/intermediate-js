@@ -42,6 +42,15 @@ d3.select("svg")
     })
     .attr("fill", "purple");
 
+d3.select('svg')
+    .append('text')
+    .classed('title', true)
+    .text('Birth data in ' + minYear)
+    .attr('x', width/2)
+    .attr('y', 30)
+    .style('tex+t-anchor', 'middle')
+    .style('font-size', '2em');
+
 d3.select("input")
     .on("input", function() {
       var year = +d3.event.target.value;
@@ -49,6 +58,18 @@ d3.select("input")
         .data(birthData.filter(function(d) {
           return d.year === year;
         }))
+        .transition()
+        .duration(500)
+        .ease(d3.easePoly.exponent(8))
+        .delay((d, i) => i * 250)
+          .on('start', () => {
+              d3.select('.title')
+                  .text('Updating to ' + year + ' data...');
+          })
+          .on('end', () => {
+              d3.select('.title')
+                  .text('Birth data in ' + year);
+          })
           .attr("height", function(d) {
             return height - yScale(d.births);
           })
