@@ -2,55 +2,137 @@ const width = 500;
 const height = 500;
 const padding = 30;
 
-const publicFunding = d3.json('percent-of-healthcare-that-is-publically-funded.json', (error, response) => {
-    if (error) throw error;
+const findWHODataMatch = (rawData, NYTCountry) => {
+    let WHOCountry;
 
-    publicFunding = response.fact;
-    //     .filter(item => item.dims.YEAR === '2017')
-    //     .map(item => {
-    //         return {
-    //             proportionPublicallyFunded: item.Value,
-    //             country: item.dims.COUNTRY,
-    //         }
+    switch (NYTCountry) {
+        case 'United States':
+            WHOCountry = 'United States of America';
+            break;
+        case 'Bolivia':
+            WHOCountry = 'Bolivia (Plurinational State of)';
+            break;
+        case 'Brunei':
+            WHOCountry = 'Brunei Darussalam';
+            break;
+        case 'Cape Verde':
+            WHOCountry = 'Cabo Verde';
+            break;
+        case 'Cote d\'Ivoire':
+            WHOCountry = 'Côte d\'Ivoire';
+            break;
+        case 'Czech Republic':
+            WHOCountry = 'Czechia';
+            break;
+        case 'Democratic Republic of Congo':
+            WHOCountry = 'Democratic Republic of the Congo';
+            break;
+        case 'Iran':
+            WHOCountry = 'Iran (Islamic Republic of)';
+            break;
+        case 'Laos':
+            WHOCountry = 'Lao People\'s Democratic Republic';
+            break;
+        case 'South Korea':
+            WHOCountry = 'Republic of Korea';
+            break;
+        case 'Moldova':
+            WHOCountry = 'Republic of Moldova';
+            break;
+        case 'Russia':
+            WHOCountry = 'Russian Federation';
+            break;
+        case 'Syria':
+            WHOCountry = 'Syrian Arab Republic';
+            break;
+        case 'Timor':
+            WHOCountry = 'Timor-Leste';
+            break;
+        case 'United Kingdom':
+            WHOCountry = 'United Kingdom of Great Britain and Northern Ireland';
+            break;
+        case 'Tanzania':
+            WHOCountry = 'United Republic of Tanzania';
+            break;
+        case 'Venezuela':
+            WHOCountry = 'Venezuela (Bolivarian Republic of)';
+            break;
+        case 'Vietnam':
+            WHOCountry = 'Viet Nam';
+            break;
+        default:
+            WHOCountry = NYTCountry;
+    }
+
+    return rawData.find(el => el.dims.COUNTRY === WHOCountry && el.dims.YEAR === "2017");
+};
+
+Promise.all([
+    d3.json('owid-covid-data.json'),
+    d3.json('percent-of-healthcare-that-is-publicly-funded.json'),
+    d3.json('privatePerCapitaHealthcareSpending.json'),
+    d3.json('publicPerCapitaHealthcareSpending.json'),
+]).then(function([covidData, phpf, privatePCFundingRaw, publicPCFundingRaw]) {
+    const percentOfHealthcarePubliclyFunded = phpf.fact;
+    const privatePCFunding = privatePCFundingRaw.fact;
+    const publicPCFunding = publicPCFundingRaw.fact;
+
+    // This code just existed to see the WHO countries that had names that didn't exist in the COVID data
+    // const whoCountries = [...new Set(privatePCFunding.map(item => item.dims.COUNTRY))];
+    // const whoCountriesFiltered = whoCountries.filter(whoCountry => {
+    //     return !Object.entries(covidData).find(element => element[1].location === whoCountry);
     // });
+    // console.log(whoCountriesFiltered);
 
-});
-console.log(publicFunding);
-d3.json('owid-covid-data.json', (error, response) => {
-    const chartData = Object.entries(response).map(item => {
+
+    const chartData = Object.entries(covidData).map(item => {
         const country = item[1].location;
-        const publicFundingMatch = publicFunding.find(el => el.dims.COUNTRY === country && el.dims.YEAR === 2017);
-        item[1].proportionOfPublicHealthcareFunding = publicFundingMatch.Value;
+
+        const publicFundingMatch = findWHODataMatch(percentOfHealthcarePubliclyFunded, country);
+        const publicPCFundingMatch = findWHODataMatch(publicPCFunding, country);
+        const privatePCFundingMatch = findWHODataMatch(privatePCFunding, country);
+
+        item[1].proportionOfPublicHealthcareFunding =
+            publicFundingMatch ? publicFundingMatch.Value : '';
+
+        item[1].publicPCFunding =
+            publicPCFundingMatch ? publicPCFundingMatch.Value : '';
+
+        item[1].privatePCFunding =
+            privatePCFundingMatch ? privatePCFundingMatch.Value : '';
+
 
         return item[1];
-    });
-    // const chartData = response.map(item => {
-    //    item.proportionOfPublicHealthcareFunding = 400;
-    // });
-   console.log(chartData);
+    }).filter(item => item.privatePCFunding && item.publicPCFunding && item.proportionOfPublicHealthcareFunding);
+
+    console.log(chartData);
+
+}).catch(function(err) {
+    console.log(err);
+    // handle error here
 });
 
-const yScale = d3.scaleLinear()
-    .domain(d3.extent(birthData2015, d => d.tertiaryEducationGenderParity2015))
-    .range([height - padding, padding]);
-
-const xScale = d3.scaleLinear()
-    .domain(d3.extent(birthData2015, d => d.birthsPerWoman2015))
-    .range([padding, width - padding]);
-
-const xAxis = d3.axisBottom(xScale)
-    .tickSize(-height + 2 * padding)
-    .tickSizeOuter(0);
-const yAxis = d3.axisLeft(yScale)
-    .tickSize(-width + 2 * padding)
-    .tickSizeOuter(0);
-
-d3.select('svg')
-    .append('g')
-    .attr('transform', 'translate(0,' + (height - padding) + ')')
-    .call(xAxis);
-
-d3.select('svg')
-    .append('g')
-    .attr('transform', 'translate(' + padding + ',0)')
-    .call(yAxis);
+// const yScale = d3.scaleLinear()
+//     .domain(d3.extent(birthData2015, d => d.tertiaryEducationGenderParity2015))
+//     .range([height - padding, padding]);
+//
+// const xScale = d3.scaleLinear()
+//     .domain(d3.extent(birthData2015, d => d.birthsPerWoman2015))
+//     .range([padding, width - padding]);
+//
+// const xAxis = d3.axisBottom(xScale)
+//     .tickSize(-height + 2 * padding)
+//     .tickSizeOuter(0);
+// const yAxis = d3.axisLeft(yScale)
+//     .tickSize(-width + 2 * padding)
+//     .tickSizeOuter(0);
+//
+// d3.select('svg')
+//     .append('g')
+//     .attr('transform', 'translate(0,' + (height - padding) + ')')
+//     .call(xAxis);
+//
+// d3.select('svg')
+//     .append('g')
+//     .attr('transform', 'translate(' + padding + ',0)')
+//     .call(yAxis);
