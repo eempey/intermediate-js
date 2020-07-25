@@ -1,5 +1,5 @@
-const width = 500;
-const height = 500;
+const width = 1200;
+const height = 600;
 const padding = 30;
 
 const findWHODataMatch = (rawData, NYTCountry) => {
@@ -96,10 +96,13 @@ Promise.all([
             publicFundingMatch ? publicFundingMatch.Value : '';
 
         item[1].publicPCFunding =
-            publicPCFundingMatch ? publicPCFundingMatch.Value : '';
+            publicPCFundingMatch ? parseFloat(publicPCFundingMatch.Value) : '';
 
         item[1].privatePCFunding =
-            privatePCFundingMatch ? privatePCFundingMatch.Value : '';
+            privatePCFundingMatch ? parseFloat(privatePCFundingMatch.Value) : '';
+
+        item[1].pCFunding =
+            item[1].privatePCFunding + item[1].publicPCFunding;
 
 
         return item[1];
@@ -107,32 +110,72 @@ Promise.all([
 
     console.log(chartData);
 
+    const deathsPerMillionExtent = d3.extent(chartData, d => {
+        const lastElement = d.data.slice(-1)[0];
+        return lastElement.total_deaths_per_million;
+    });
+
+    const yScale = d3.scaleLinear()
+        .domain(deathsPerMillionExtent)
+        .range([height - padding, padding]);
+
+    const xScale = d3.scaleLinear()
+        .domain(d3.extent(chartData, d => d.pCFunding))
+        .range([padding, width - padding]);
+
+    const xAxis = d3.axisBottom(xScale)
+        .tickSize(-height + 2 * padding)
+        .tickSizeOuter(0);
+    const yAxis = d3.axisLeft(yScale)
+        .tickSize(-width + 2 * padding)
+        .tickSizeOuter(0);
+
+    const tooltip = d3.select('body')
+        .append('div')
+        .classed('tooltip', true);
+
+    d3.select('svg')
+        .attr('height', height)
+        .attr('width', width)
+        .append('g')
+        .attr('transform', 'translate(0,' + (height - padding) + ')')
+        .call(xAxis);
+
+    d3.select('svg')
+        .append('g')
+        .attr('transform', 'translate(' + padding + ',0)')
+        .call(yAxis);
+
+    d3.select('svg')
+        .selectAll('circle')
+        .data(chartData)
+        .enter()
+        .append('circle')
+        .attr('cx', d => xScale(d.pCFunding))
+        .attr('cy', d => yScale(d.data.slice(-1)[0].total_deaths_per_million))
+        .attr('r', 5)
+        .on('mousemove', showToolTip)
+        .on('touchstart', showToolTip)
+        .on('mouseout', hideToolTip)
+        .on('touchend', hideToolTip);
+
+    function showToolTip(d) {
+        tooltip
+            .style('opacity', 1)
+            .style('left', d3.event.x - (tooltip.node().offsetWidth / 2) + 'px')
+            .style('top', d3.event.y + 'px')
+            .html(`
+                <p>Country: ${d.location}</p>
+            `);
+    }
+
+    function hideToolTip(d){
+        tooltip.style('opacity', 0);
+    }
+
 }).catch(function(err) {
     console.log(err);
     // handle error here
 });
 
-// const yScale = d3.scaleLinear()
-//     .domain(d3.extent(birthData2015, d => d.tertiaryEducationGenderParity2015))
-//     .range([height - padding, padding]);
-//
-// const xScale = d3.scaleLinear()
-//     .domain(d3.extent(birthData2015, d => d.birthsPerWoman2015))
-//     .range([padding, width - padding]);
-//
-// const xAxis = d3.axisBottom(xScale)
-//     .tickSize(-height + 2 * padding)
-//     .tickSizeOuter(0);
-// const yAxis = d3.axisLeft(yScale)
-//     .tickSize(-width + 2 * padding)
-//     .tickSizeOuter(0);
-//
-// d3.select('svg')
-//     .append('g')
-//     .attr('transform', 'translate(0,' + (height - padding) + ')')
-//     .call(xAxis);
-//
-// d3.select('svg')
-//     .append('g')
-//     .attr('transform', 'translate(' + padding + ',0)')
-//     .call(yAxis);
+
