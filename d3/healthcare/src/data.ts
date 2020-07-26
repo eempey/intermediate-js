@@ -5,12 +5,24 @@ interface IWHOData {
     fact: any;
 }
 
+interface ICovidData {
+    date: string;
+    new_cases: Number;
+    new_cases_per_million: Number;
+    new_deaths: Number;
+    new_deaths_per_million: Number;
+    total_cases: Number;
+    total_cases_per_million: Number;
+    total_deaths: Number;
+    total_deaths_per_million: Number;
+}
+
 interface IChartData {
     aged_65_older: Number;
     aged_70_older: Number;
     cardiovasc_death_rate: Number;
     continent: string;
-    data: Array<any>;​​​
+    data: ICovidData[];​​​
     diabetes_prevalence: Number;
     extreme_poverty: Number;
     female_smokers: Number;
@@ -25,7 +37,7 @@ interface IChartData {
     population: Number;
     population_density: Number;
     privatePCFunding: Number;
-    proportionOfPublicHealthcareFunding: string; // EEMPEY fix this
+    proportionOfPublicHealthcareFunding: Number;
     publicPCFunding: Number;
 }
 
@@ -94,14 +106,6 @@ const findWHODataMatch = (rawData, NYTCountry) => {
     return rawData.find(el => el.dims.COUNTRY === WHOCountry && el.dims.YEAR === "2017");
 };
 
-const somePromise = new Promise((resolve, reject) => {
-    resolve([1, 2, 3, 4, 5]);
-});
-
-export function someData() {
-    return somePromise.then(response => response);
-}
-
 export function getChartData() {
     return Promise.all<IChartData, IWHOData, IWHOData, IWHOData>([
         json('owid-covid-data.json'),
@@ -120,7 +124,6 @@ export function getChartData() {
         // });
         // console.log(whoCountriesFiltered);
 
-
         return Object.entries(covidData).map(item => {
             const country = item[1].location;
 
@@ -129,7 +132,7 @@ export function getChartData() {
             const privatePCFundingMatch = findWHODataMatch(privatePCFunding, country);
 
             item[1].proportionOfPublicHealthcareFunding =
-                publicFundingMatch ? publicFundingMatch.Value : '';
+                publicFundingMatch ? parseFloat(publicFundingMatch.Value) : '';
 
             item[1].publicPCFunding =
                 publicPCFundingMatch ? parseFloat(publicPCFundingMatch.Value) : '';
@@ -139,7 +142,6 @@ export function getChartData() {
 
             item[1].pCFunding =
                 item[1].privatePCFunding + item[1].publicPCFunding;
-
 
             return item[1];
         }).filter(item => item.privatePCFunding && item.publicPCFunding && item.proportionOfPublicHealthcareFunding);

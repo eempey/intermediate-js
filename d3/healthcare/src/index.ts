@@ -1,12 +1,8 @@
-import { someData, getChartData } from './data';
+import { getChartData } from './data';
 import { scaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select, event } from 'd3-selection';
 import { extent } from 'd3-array';
-
-someData().then(response => console.log(response));
-
-getChartData().then(response => console.log(response));
 
 const width = 1200;
 const height = 600;
