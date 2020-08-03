@@ -17,7 +17,7 @@ interface ICovidData {
     total_deaths_per_million: Number;
 }
 
-interface IChartData {
+export interface IChartData {
     aged_65_older: Number;
     aged_70_older: Number;
     cardiovasc_death_rate: Number;
