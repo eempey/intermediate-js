@@ -3,6 +3,7 @@ import { scaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select, selectAll, event } from 'd3-selection';
 import { extent } from 'd3-array';
+import 'd3-transition';
 require('./styles.scss');
 
 const width = 1200;
@@ -33,11 +34,24 @@ function renderData(chartData: IChartData[], xScale, yScale, colorScale) {
     const checkedBoxes = selectAll('input[name="continents"]:checked').nodes().map(box => box.value);
 
     const filteredData = chartData.filter(d => checkedBoxes.includes(d.continent));
+    const t = select('svg').transition()
+        .duration(1000);
 
     select('svg')
         .selectAll('circle')
-        .data(filteredData)
-        .join('circle')
+        .data(filteredData, (d: IChartData) => d.location)
+        .join(
+            enter => enter.append('circle')
+                .attr('opacity', 0)
+                .attr('fill', 'purple')
+                .call(enter => enter.transition(t)
+                    .attr('opacity', 1)),
+            update => update,
+            exit => exit
+                .call(exit => exit.transition(t)
+                    .attr('opacity', 0)
+                    .remove())
+        )
         .attr('cx', d => xScale(d.pCFunding))
         .attr('cy', d => yScale(d.data.slice(-1)[0].total_deaths_per_million))
         .attr('r', 5)
@@ -78,7 +92,6 @@ getChartData().then(chartData => {
 
     select('svg')
         .attr("viewBox", `0 0 ${width} ${height}`)
-        .attr('style', 'border: solid 1px')
         .append('g')
         .attr('transform', 'translate(0,' + (height - padding) + ')')
         .call(xAxis);
